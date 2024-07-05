@@ -17,9 +17,14 @@ export const saveAndGetCurrentUser = async () => {
         data: JSON.parse(JSON.stringify(existingUser)),
       };
     }
+   let name = user?.username;
+    if (!name) {
+      name = user?.firstName + " " + user?.lastName;
+    }
 
+    name = name.replace("null", "");
     const userObj = {
-      name: user?.firstName! + " " + user?.lastName,
+      name,
       email: user?.emailAddresses[0].emailAddress,
       clerkUserId: user?.id,
     };
