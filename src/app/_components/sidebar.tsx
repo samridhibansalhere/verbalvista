@@ -8,11 +8,12 @@ import React, { useEffect, useState } from "react";
 
 function Sidebar({ setShowSidebar = () => {} }: { setShowSidebar?: any }) {
   const [hoveredChatId, setHoveredChatId] = useState<string>("");
-  const [loading = false, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedChatForDelete, setSelectedChatForDelete] = useState<any>(null);
   const { loggedInUserData } = usersGlobalStore() as any;
   const { userChats, setUserChats, selectedChat, setSelectedChat } =
     chatsGlobalStore() as any;
+
   const getChats = async () => {
     try {
       setLoading(true);
@@ -89,6 +90,7 @@ function Sidebar({ setShowSidebar = () => {} }: { setShowSidebar?: any }) {
           <div className="flex flex-col gap-3 mt-7">
             {userChats?.map((chat: any) => (
               <div
+                key={chat._id}
                 className={classNames(
                   "cursor-pointer flex justify-between items-center p-2 hover:bg-gray-500 hover:bg-opacity-30",
                   {
@@ -98,21 +100,20 @@ function Sidebar({ setShowSidebar = () => {} }: { setShowSidebar?: any }) {
                 )}
                 onMouseEnter={() => setHoveredChatId(chat._id)}
                 onMouseLeave={() => setHoveredChatId("")}
+                onClick={() => {
+                  setSelectedChat(chat);
+                }}
               >
-                <span
-                  className="text-sm text-gray-300"
-                  onClick={() => {
-                    setSelectedChat(chat);
-                  }}
-                >
-                  {chat.title}
-                </span>
+                <span className="text-sm text-gray-300">{chat.title}</span>
 
                 {hoveredChatId === chat._id && (
                   <Trash2
                     size={15}
                     className="text-gray-300"
-                    onClick={() => deleteChatHandler(chat._id)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevents the onClick on the div from triggering
+                      deleteChatHandler(chat._id);
+                    }}
                   />
                 )}
 
