@@ -5,26 +5,18 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Spin, message } from "antd";
 
-interface CustomLayoutProps {
-  children: React.ReactNode;
-}
-
-const CustomLayout: React.FC<CustomLayoutProps> = ({ children }) => {
+function CustomLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   if (pathname.includes("/sign-in") || pathname.includes("/sign-up")) {
     return <>{children}</>;
   }
-  const { setLoggedInUserData, loggedInUserData } = usersGlobalStore((state: any) => ({
-    setLoggedInUserData: state.setLoggedInUserData,
-    loggedInUserData: state.loggedInUserData,
-  }));
-  
-  const [loading, setLoading] = useState(false);
 
+  const { setLoggedInUserData, loggedInUserData }: any = usersGlobalStore();
+  const [loading, setLoading] = useState(false);
   const getLoggedInUser = async () => {
     try {
       setLoading(true);
-      const response = await saveAndGetCurrentUser();
+      const response: any = await saveAndGetCurrentUser();
       if (response.success) {
         setLoggedInUserData(response.data);
       } else {
@@ -52,7 +44,6 @@ const CustomLayout: React.FC<CustomLayoutProps> = ({ children }) => {
   if (!loggedInUserData) return null;
 
   return <div>{children}</div>;
-};
+}
 
 export default CustomLayout;
-
